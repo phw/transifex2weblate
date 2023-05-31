@@ -15,15 +15,12 @@ You can download glossaries in your Glossaries project under "Glossaries" as
 CSV files.
 
 
-## Convert Transifex CSV files to TBX
-
-This requires the [csv2tbx](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/csv2tbx.html)
-utility which is part of the [Translate Toolkit](docs.translatehouse.org/projects/translate-toolkit/en/latest/index.html).
+## Convert Transifex CSV files into Weblate format
 
 Example:
 
 ```
-./tx2tbx.py -f musicbrainz_2013-12-07_all_languages.csv -o out/
+./tx2weblate.py -f musicbrainz_2013-12-07_all_languages.csv -o out/
 ```
 
 
@@ -35,7 +32,7 @@ Example:
 ./push2weblate.py -t YOUR_WEBLATE_API_TOKEN \
     -H translations.metabrainz.org \
     -c musicbrainz/glossary \
-    -i out/*.tbx
+    -i out/*.csv
 ```
 
 
