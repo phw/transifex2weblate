@@ -37,9 +37,9 @@ LANGUAGE_MAP = {
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Upload TBX files to Weblate Glossary")
+    parser = argparse.ArgumentParser(description="Upload translation files to Weblate Glossary")
     parser.add_argument("-i", "--input", action='store', nargs='*', required=True,
-                        help="TBX files to upload", dest='files')
+                        help="translation files to upload", dest='files')
     parser.add_argument("-t", "--token", action='store', required=True,
                         help="Weblate API token")
     parser.add_argument("-H", "--host", action='store', default='hosted.weblate.org',
@@ -50,7 +50,7 @@ def parse_args():
     return args
 
 
-def upload_tbx(args):
+def upload_translation(args):
     http = urllib3.PoolManager()
     r = http.request(
         'GET',
@@ -76,7 +76,7 @@ def upload_tbx(args):
         lang = LANGUAGE_MAP.get(lang, lang).replace('-', '_')
         print(f'Processing {path} (language {lang})...')
         with open(path) as f:
-            tbx_data = f.read()
+            file_data = f.read()
         try:
             r = http.request(
                 'POST',
@@ -101,21 +101,25 @@ def upload_tbx(args):
                 'Authorization': f'Token {args.token}'
             },
             fields={
-                'file': (filename, tbx_data),
-                'conflict': 'ignore',
-                'method': 'replace'
+                'file': (filename, file_data),
+                'conflicts': 'ignore',
+                'method': 'add',
             })
-        # r = http.request(
-        #     'GET',
-        #     f'https://{args.host}/api/translations/{args.component}/{lang}/',
-        #     headers={
-        #         'Authorization': f'Token {args.token}'
-        #     })
-
-        print(f'Uploaded file {filename}: {r.status}')
-        print(r.data)
+        print(f'Uploaded file {filename} (add): {r.status}; {r.data}')
+        r = http.request(
+            'POST',
+            f'https://{args.host}/api/translations/{args.component}/{lang}/file/',
+            headers={
+                'Authorization': f'Token {args.token}'
+            },
+            fields={
+                'file': (filename, file_data),
+                'conflicts': 'ignore',
+                'method': 'translate',
+            })
+        print(f'Uploaded file {filename} (translate): {r.status}; {r.data}')
 
 
 if __name__ == "__main__":
     args = parse_args()
-    upload_tbx(args)
+    upload_translation(args)
