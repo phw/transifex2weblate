@@ -17,6 +17,9 @@ CSV files.
 
 ## Convert Transifex CSV files to TBX
 
+This requires the [csv2tbx](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/csv2tbx.html)
+utility which is part of the [Translate Toolkit](docs.translatehouse.org/projects/translate-toolkit/en/latest/index.html).
+
 Example:
 
 ```
